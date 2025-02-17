@@ -13,8 +13,7 @@ export default function usehttpRequest() {
 
     const detectLanguage = async(query) =>{
         const detector = await window.ai.languageDetector.create();
-        text = query
-        const results = await detector.detect(text);
+        const results = await detector.detect(query);
         const language = results[0]
         console.log(language)
     }
