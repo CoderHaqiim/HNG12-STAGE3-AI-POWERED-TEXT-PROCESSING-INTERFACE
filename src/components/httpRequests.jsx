@@ -9,6 +9,15 @@ export default function usehttpRequest() {
 
     //interface to send users' questions and get the reply from the backend
     //This http request expects a json object that has a property called: message=""
+
+
+    const detectLanguage = async(text) =>{
+        const detector = await window.ai.languageDetector.create();
+        text ="Hola, ¿cómo estás?"
+        const results = await detector.detect(text);
+        console.log(results);
+    }
+
     const getAiReply = async(query,currentTime) =>{
         function handleError(Er){
             dispatch(setReplyIsLoading(false))
@@ -44,5 +53,5 @@ export default function usehttpRequest() {
         }
     }
 
-  return{getAiReply}
+  return{getAiReply, detectLanguage}
 }
