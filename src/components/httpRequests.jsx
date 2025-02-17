@@ -11,7 +11,7 @@ export default function usehttpRequest() {
     //This http request expects a json object that has a property called: message=""
 
 
-    const detectLanguage = async(text) =>{
+    const detectLanguage = async() =>{
         const detector = await window.ai.languageDetector.create();
         text ="Hola, ¿cómo estás?"
         const results = await detector.detect(text);
