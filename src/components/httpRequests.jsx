@@ -11,6 +11,26 @@ export default function usehttpRequest() {
     //This http request expects a json object that has a property called: message=""
 
 
+    async function summarizeText(text) {
+      if ('summarizer' in navigator) {
+        const text = "Your lengthy text here.";
+        navigator.summarizer.summarize(text)
+          .then(summary => {
+            console.log("Summary:", summary);
+          })
+          .catch(error => {
+            console.error("Summarization error:", error);
+          });
+      } else {
+        console.error("Summarizer API not supported in this browser.");
+      }
+    }
+    
+    // Example Usage
+    summarizeText("Your long text goes here...");
+    
+
+
     const detectLanguage = async(query) =>{
         const detector = await window.ai.languageDetector.create();
         const results = await detector.detect(query);
@@ -18,5 +38,5 @@ export default function usehttpRequest() {
         console.log(language)
     }
 
-  return{detectLanguage}
+  return{detectLanguage, summarizeText}
 }
