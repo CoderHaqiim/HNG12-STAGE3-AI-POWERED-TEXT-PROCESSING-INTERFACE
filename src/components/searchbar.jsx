@@ -20,7 +20,7 @@ export default function Searchbar() {
     const inputRef = useRef(null)
 
     const currentTime = useTimestamp()
-    const {getAiReply, detectLanguage} = usehttpRequest()
+    const {detectLanguage} = usehttpRequest()
 
     const dispatch = useDispatch()
 
@@ -50,8 +50,7 @@ export default function Searchbar() {
         dispatch(setReplyIsLoading(true))
         clearInput()
         setPlaceholder(`ask ${showName}`)
-        detectLanguage()
-        getAiReply(query,currentTime,dialogue)
+        detectLanguage(query)
     }
 
     const sendWithEnter = (e) => {
