@@ -11,7 +11,7 @@ export default function Maincontent(){
   return (
     <div className='content w-full h-auto flex-1 overflow-y-scroll'>
         <Container>
-            <div className='w-full h-auto flex gap-[25px] flex-col py-[20px]'>
+            <div className='w-full h-auto flex gap-[30px] lg:gap-[50px] flex-col py-[20px]'>
                 {
                   dialogue.map(convo =>
                     convo.author === 'user'? <Query key={convo.id} time={convo.time} query={convo.message}/> : <Reply time={convo.time} reply={convo.message} key={convo.id}/>

@@ -16,11 +16,11 @@ export default function Searchbar() {
     const showName = 'Textify'
     const [active, setActive] = useState(false)
     const [query, setQuery] = useState('')
-    const [placeholder, setPlaceholder] = useState(`translate with ${showName}`)
+    const [placeholder, setPlaceholder] = useState(`translate and summarize with ${showName}`)
     const inputRef = useRef(null)
 
     const currentTime = useTimestamp()
-    const {detectLanguage, summarizeText} = usehttpRequest()
+    const {detectLanguage, detectDownload, summarizeText, translateLanguage} = usehttpRequest()
 
     const dispatch = useDispatch()
 
@@ -42,16 +42,16 @@ export default function Searchbar() {
 
     const sendQuery =(e) =>{
         e.preventDefault()
-        if(!query || replyIsLoading === true){
+        if(!query){
             return
         }
         dispatch(addDialogue({id:dialogue.length, author:'user', message:query, time:currentTime}))
         setQuery('')
-        dispatch(setReplyIsLoading(true))
+        // dispatch(setReplyIsLoading(true))
         clearInput()
         setPlaceholder(`ask ${showName}`)
-        detectLanguage(query)
         summarizeText()
+        detectDownload()
     }
 
     const sendWithEnter = (e) => {
