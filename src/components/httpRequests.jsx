@@ -64,7 +64,8 @@ export default function usehttpRequest(){
         console.log("The translator API is supported.");
         
         const translatorCapabilities = await self.ai.translator.capabilities();
-        const canTranslate = translatorCapabilities.languagePairAvailable("en","es");
+        const canTranslate = await translatorCapabilities.languagePairAvailable("en","es");
+        console.log(canTranslate)
 
         if (canTranslate === "no") {
           dispatch(setError([...error, { id:error.length, message: "The language pair is not yet supported" }]));
@@ -74,8 +75,20 @@ export default function usehttpRequest(){
           dispatch(setError([...error, { id:error.length, message: "The language pair is not yet supported" }]));
           console.log("Waiting for download...");
           return;
-        } else if (canTranslate === "readily") {
-          const translator = await self.ai.translator.create({ sourceLanguage:"en", targetLanguage:"es" });
+        } else if (canTranslate == "readily") {
+          console.log('readily')
+
+          const translator = await self.ai.translator.create({ 
+            sourceLanguage:"en",
+            targetLanguage:"es",
+
+            monitor(m){
+              m.addEventListener('downloadprogress', (e)=>{
+                console.log(`Downloaded ${e.loaded} of ${e.total} bytes`)
+              })
+            }
+
+          });
           const translatedText = await translator.translate("hello");
           console.log(translatedText)
 
