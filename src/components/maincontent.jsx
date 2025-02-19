@@ -13,8 +13,13 @@ export default function Maincontent(){
         <Container>
             <div className='w-full h-auto flex gap-[30px] lg:gap-[50px] flex-col py-[20px]'>
                 {
-                  dialogue.map(convo =>
-                    convo.author === 'user'? <Query key={convo.id} time={convo.time} query={convo.message}/> : <Reply time={convo.time} reply={convo.message} key={convo.id}/>
+                  // dialogue.map((convo, index) =>
+                  //   convo.author === 'user'? <Query key={convo.id} id={index} time={convo.time} query={convo.message}/> : <Reply time={convo.time} id={index} reply={convo.message} key={convo.id}/>
+                  // )
+                  dialogue?.map((dialog, index) => 
+                    dialog?.map((convo) =>
+                      convo.author === 'user'? <Query key={convo.id} id={index} time={convo.time} query={convo.message}/> : <Reply time={convo.time} id={index} reply={convo.message} key={convo.id}/>
+                    )
                   )
                 }
                 {replyIsLoading? <LoadingAnimation/>:<></>}

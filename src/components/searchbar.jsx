@@ -20,7 +20,7 @@ export default function Searchbar() {
     const inputRef = useRef(null)
 
     const currentTime = useTimestamp()
-    const {detectLanguage, detectDownload, summarizeText, translateLanguage} = usehttpRequest()
+    const { detectDownload, summarizeText} = usehttpRequest()
 
     const dispatch = useDispatch()
 
@@ -45,13 +45,12 @@ export default function Searchbar() {
         if(!query){
             return
         }
-        dispatch(addDialogue({id:dialogue.length, author:'user', message:query, time:currentTime}))
+        dispatch(addDialogue([...dialogue, [{id:dialogue.length + 'user', author:'user', message:query, time:currentTime}]]))
         setQuery('')
         // dispatch(setReplyIsLoading(true))
         clearInput()
         setPlaceholder(`ask ${showName}`)
-        summarizeText()
-        detectDownload()
+        // detectDownload()
     }
 
     const sendWithEnter = (e) => {
