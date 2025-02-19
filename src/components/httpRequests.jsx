@@ -89,7 +89,7 @@ export default function usehttpRequest(){
             }
 
           });
-          const translatedText = await translator.translate("hello");
+          const translatedText = await translator.translate(query);
           console.log(translatedText)
 
           if(!translated){
