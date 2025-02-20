@@ -4,7 +4,7 @@ const languages = {
     pt: "Portuguese",
     es: "Spanish",
     tr:"Turkish",
-    fr:"french"
+    fr:"French"
 }
 
 export {languages}

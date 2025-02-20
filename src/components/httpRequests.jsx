@@ -1,122 +1,178 @@
-import { addDialogue } from "../redux/states/dialogue"
-import { setReplyIsLoading } from "../redux/states/replyIsLoading"
+// import { setReplyIsLoading } from "../redux/states/replyIsLoading"
 import { useSelector, useDispatch } from "react-redux"
 import { addMessageToDialogue } from "../redux/states/dialogue"
 import { changeTranslation } from "../redux/states/dialogue"
-import { languages } from "../utils/languages"
 import { setError } from "../redux/states/error"
-import { useState } from "react"
 
-export default function usehttpRequest(){
-    const [count, setCount] = useState(0)
+export default function usehttpRequests(){
     const dialogue = useSelector((state => state.dialogue.value))
     const error = useSelector((state => state.error.value))
     const dispatch = useDispatch()
 
-    async function summarizeText(query ="This is the summary",id,summarized) {
-      // if ('ai' in self && 'summarizer' in self.ai) {
-      //   console.log("The Summarizer API is supported.")
-      // }else{
-      //   console.log("The Summarizer API is not supported on your device")
-      // }
 
+    // summary logic
+    async function summarizeText(query,id,summarized) {
+      const options = {
+        sharedContext:'This article is intended for a tech-savvy audience.',
+        type: 'key-points',
+        format: 'plain-text',
+        length: 'medium',
+      };
 
-      if(summarized){
-        return
-      }else{
-        dispatch(addMessageToDialogue({index:id, payload:{id:`${id}c`, author:'ai', message:"Summary", time:"100"}}))
-        console.log(dialogue)
-      }
-    }
+      try{
+        if ('ai' in self && 'summarizer' in self.ai) {
+          const summaizerAvailable = (await self.ai.summarizer.capabilities()).available
+          let summarizer;
+  
+          if (summaizerAvailable === 'no') {
+            dispatch(setError([...error, {id: error.length, message:"The summarizer API is not permitted on your device"}]))
+            return;
+          }else if (summaizerAvailable === 'readily') {
+            if(summarized){
+              dispatch(setError([...error, {id: error.length, message: "Text has already been summarized"}]))
+            }else{
+              summarizer = await self.ai.summarizer.create(options);
+  
+              const summary = await summarizer.summarize(query, {
+                context: 'This article is intended for a tech-savvy audience.',
+              });
 
-    const detectLanguage = async(query, setDetectedLanguage) =>{
-      if ('ai' in self && 'languageDetector' in self.ai) {
-        const languageDetectorCapabilities = await self.ai.languageDetector.capabilities()
-        const canDetect = languageDetectorCapabilities.capabilities
-        let detector;
-
-        if(1 == 1){
-          detector = await self.ai.languageDetector.create()
-          const results = await detector.detect(query) 
-          const suspectedLanguage = results[0]
-          console.log(suspectedLanguage)
-
-          if(suspectedLanguage.confidence < 0.6){
-            setDetectedLanguage('uncertain' + suspectedLanguage.detectedLanguage)
-          }else{
-            const langCode = suspectedLanguage.detectedLanguage
-            setDetectedLanguage(languages[langCode] ?? langCode)
+              dispatch(addMessageToDialogue({index:id, payload:{id:`${id}c`, author:'ai', message:summary}}))
+            }
+          } else {
+            dispatch(setError([...error, {id: error.length, message: "The summarizer API needs to be downloaded on your device"}]))
+            return
+            // summarizer = await self.ai.summarizer.create(options);
+            // summarizer.addEventListener('downloadprogress', (e) => {
+            //   console.log(e.loaded, e.total);
+            // });
+            // await summarizer.ready;
           }
         }else{
-          dispatch(setError([...error, {id:error.length, message: "Language detector not found"}]))
+          dispatch(setError([...error, {id: error.length, message:"The summarizer API is not supported on your device"}]))
         }
-      }else{
-        dispatch(setError([...error, {id: error.length, message:"Language detection is unavailable on this device"}]))
-        return
+      }
+      catch(error){
+        dispatch(setError([...error, {id: error.length, message:error?.message}]))
+      }
+      finally{
+        setTimeout(()=>{dispatch(setError([]))},3000)
       }
     }
 
 
-    const translateLanguage = async (query, id, translated) => {
-      setCount(prev => prev + 1)
-
-      if ('ai' in self && 'translator' in self.ai) {
-        console.log("The translator API is supported.");
-        
-        const translatorCapabilities = await self.ai.translator.capabilities();
-        const canTranslate = await translatorCapabilities.languagePairAvailable("en","es");
-        console.log(canTranslate)
-
-        if (canTranslate === "no") {
-          dispatch(setError([...error, { id:error.length, message: "The language pair is not yet supported" }]));
-          console.log("Language pair not yet supported");
-          return;
-        } else if (canTranslate === "after-download") {
-          dispatch(setError([...error, { id:error.length, message: "The language pair is not yet supported" }]));
-          console.log("Waiting for download...");
-          return;
-        } else if (canTranslate == "readily") {
-          console.log('readily')
-
-          const translator = await self.ai.translator.create({ 
-            sourceLanguage:"en",
-            targetLanguage:"es",
-
-            monitor(m){
-              m.addEventListener('downloadprogress', (e)=>{
-                console.log(`Downloaded ${e.loaded} of ${e.total} bytes`)
-              })
+    //language detection logic
+    const detectLanguage = async(query, setDetectedLanguage) =>{
+      try{
+        if ('ai' in self && 'languageDetector' in self.ai) {
+          const languageDetectorCapabilities = await self.ai.languageDetector.capabilities()
+          const canDetect = languageDetectorCapabilities.available
+          let detector;
+  
+          if( canDetect === 'readily'){
+            detector = await self.ai.languageDetector.create()
+            const results = await detector.detect(query) 
+            const suspectedLanguage = results[0]
+  
+            if(suspectedLanguage.confidence < 0.6){
+              setDetectedLanguage('uncertain')
+            }else{
+              const langCode = suspectedLanguage.detectedLanguage
+              setDetectedLanguage(langCode)
             }
-
-          });
-          const translatedText = await translator.translate(query);
-          console.log(translatedText)
-
-          if(!translated){
-            dispatch(addMessageToDialogue({index:id, payload:{id:`${id}b`, author:'ai', message: translatedText, time:"100"}}))
-            console.log(dialogue)
+          }else if(canDetect === 'after-download'){
+            // detector = await self.ai.languageDetector.create({
+            //   monitor(m) {
+            //     m.addEventListener('downloadprogress', (e) => {
+            //       console.log(`Downloaded ${e.loaded} of ${e.total} bytes.`);
+            //     });
+            //   },
+            // });
+            // await detector.ready;
+            dispatch(setError([...error, {id:error.length, message: "Language detector model needs to be downloaded"}]))
           }else{
-            dispatch(changeTranslation({index:id, payload:{id:`${id}b`, author:'ai', message:"changedMessage", time:"100"}}))
-            console.log(dialogue)
+            dispatch(setError([...error, {id:error.length, message: "Language detector not found"}]))
           }
+        }else{
+          dispatch(setError([...error, {id: error.length, message:"Language detection is unavailable on this device"}]))
+          return
         }
-      } else {
-        dispatch(setError([...error, { id:error.length, message: "The Translator API is not supported on your device" }]));
-        console.log("The translator API is not supported on your device");
+      }
+      catch(error){
+        dispatch(setError([...error, {id: error.length, message:error.message}]))
+      }
+      finally{
+        setTimeout(()=>{dispatch(setError([]))},3000)
+      }
+    }
+
+
+
+//translation logic
+    const translateLanguage = async (query, id, translated, setTranslated, targetLanguage, detectedLanguage) => {
+      try{
+        if ('ai' in self && 'translator' in self.ai) {
+
+          if(!detectLanguage){
+            dispatch(setError([...error, { id:error.length, message: "Language detector must be available for translator to function" }]));
+            return
+          }
+
+          if(detectedLanguage === 'uncertain'){
+            dispatch(setError([...error, { id:error.length, message: "Can't translate text because language was not detected" }]));
+            return
+          }
+
+          const translatorCapabilities = await self.ai.translator.capabilities();
+          const canTranslate = await translatorCapabilities.languagePairAvailable(detectedLanguage, targetLanguage);
+  
+          if (canTranslate === "no") {
+            if(detectedLanguage == targetLanguage){
+              dispatch(setError([...error, { id:error.length, message: `Text is already ${detectedLanguage}` }]));
+              return
+            }
+            dispatch(setError([...error, { id:error.length, message: "The language pair is not yet supported" }]));
+            return {};
+          } else if (canTranslate === "after-download") {
+            dispatch(setError([...error, { id:error.length, message: "The language pair needs to be downloaded" }]));
+            return;
+          } else if (canTranslate == "readily") {
+            setTranslated(true)
+            const translator = await self.ai.translator.create({ 
+              sourceLanguage: detectedLanguage,
+              targetLanguage: targetLanguage,
+  
+              // monitor(m){
+              //   m.addEventListener('downloadprogress', (e)=>{
+              //     console.log(`Downloaded ${e.loaded} of ${e.total} bytes`)
+              //   })
+              // }
+  
+            });
+  
+            const translatedText = await translator.translate(query);
+            if(!translated){
+              dispatch(addMessageToDialogue({index:id, payload:{id:`${id}b`, author:'ai', message: translatedText}}))
+              console.log(dialogue)
+            }else{
+              dispatch(changeTranslation({index:id, payload:{id:`${id}b`, author:'ai', message:translatedText}}))
+              console.log(dialogue)
+            }
+  
+          }
+        } else {
+          dispatch(setError([...error, { id:error.length, message: "The Translator API is not supported on your device" }]));
+        }
+      }
+      catch(error){
+        dispatch(setError([...error,{id:error.length, message: error.message}]))
+      }
+      finally{
+        setTimeout(()=>{dispatch(setError([]))},3000)
       }
     };
     
 
-    const detectDownload = async() =>{
-      const summarizer = await ai.summarizer.create({
-        monitor(m) {
-          m.addEventListener('downloadprogress', (e) => {
-            console.log(`Downloaded ${e.loaded} of ${e.total} bytes.`);
-          });
-        }
-      });
-    }
 
-
-  return{detectLanguage, summarizeText, detectDownload, translateLanguage}
+  return{detectLanguage, summarizeText, translateLanguage}
 }

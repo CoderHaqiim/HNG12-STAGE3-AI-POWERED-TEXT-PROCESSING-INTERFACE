@@ -14,11 +14,12 @@ export const dialogueSlice = createSlice({
 
         addMessageToDialogue: (state, action) => {
             const { index, payload } = action.payload;
+            let innerArray = state.value[index]
 
             if (!Array.isArray(state.value[index])) {
                 state.value[index] = [];
             }else{
-                state.value[index].push(payload);
+                state.value[index] = [...innerArray, payload]
             }
         },
 
