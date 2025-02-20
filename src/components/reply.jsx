@@ -1,21 +1,12 @@
 import useTimestamp from "./usetimestamp"
 import { useState, useEffect } from "react"
-import { useSelector } from "react-redux"
-import LoadingAnimation from "./loadingAnimation"
 
 export default function Reply({reply, id}) {
-  const dialogue = useSelector(state => state.dialogue.value)
-
-  const [isLoading, setIsLoading] = useState(true)
   const style={
     border: '1px solid grey',
     color: "#031948"
   }
 
-  useEffect(()=>{
-    setIsLoading(false)
-  },[dialogue])
-  
   const time = useTimestamp()
 
   return (

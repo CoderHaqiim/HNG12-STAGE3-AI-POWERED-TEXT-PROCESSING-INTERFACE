@@ -1,8 +1,11 @@
 import { useState, useEffect, useRef} from "react"
 import usehttpRequests from "./httpRequests"
 import { languages } from "../utils/languages"
+import { useDispatch, useSelector } from "react-redux"
+import { setReplyIsLoading } from "../redux/states/replyIsLoading"
 
-export default function Query({query,id, time, setIsLoading}) {
+export default function Query({query,id, time}) {
+  const error = useSelector (state => state.error.value)
   const [targetLanguage, setTargetLanguage] = useState(null)
   const {translateLanguage, detectLanguage, summarizeText} = usehttpRequests()
   const [detectedLanguage, setDetectedLanguage] = useState(null)
@@ -10,6 +13,7 @@ export default function Query({query,id, time, setIsLoading}) {
   const [translated, setTranslated] = useState(false)
   const [summarized, setSummarized] = useState(false)
   const languageSelectorRef = useRef(null)
+  const dispatch = useDispatch()
 
 
   const checkLength = () => {
@@ -21,12 +25,14 @@ export default function Query({query,id, time, setIsLoading}) {
   }
 
   const runTranslation = () => {
-    translateLanguage(query, id, translated, setTranslated, targetLanguage, detectedLanguage, setIsLoading)
+    translateLanguage(query, id, translated, setTranslated, targetLanguage, detectedLanguage)
+    dispatch(setReplyIsLoading(true))
   }
 
   const runSummary = () => {
     setSummarized(true)
-    summarizeText(query,id,summarized, setIsLoading)
+    summarizeText(query,id,summarized)
+    dispatch(setReplyIsLoading(true))
   }
 
   const getTargetLanguage = () => {

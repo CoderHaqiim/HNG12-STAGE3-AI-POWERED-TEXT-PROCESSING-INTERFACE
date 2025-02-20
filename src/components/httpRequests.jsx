@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { addMessageToDialogue } from "../redux/states/dialogue"
 import { changeTranslation } from "../redux/states/dialogue"
 import { setError } from "../redux/states/error"
+import { setReplyIsLoading } from "../redux/states/replyIsLoading"
 
 export default function usehttpRequests(){
     const dialogue = useSelector((state => state.dialogue.value))
@@ -57,7 +58,7 @@ export default function usehttpRequests(){
       }
       finally{
         setTimeout(()=>{dispatch(setError([]))},3000)
-        
+        dispatch(setReplyIsLoading(false))
       }
     }
 
@@ -169,7 +170,10 @@ export default function usehttpRequests(){
         dispatch(setError([...error,{id:error.length, message: error.message}]))
       }
       finally{
-        setTimeout(()=>{dispatch(setError([]))},3000)
+        setTimeout(()=>{
+          dispatch(setError([]))
+        },3000)
+        dispatch(setReplyIsLoading(false))
       }
     };
     
