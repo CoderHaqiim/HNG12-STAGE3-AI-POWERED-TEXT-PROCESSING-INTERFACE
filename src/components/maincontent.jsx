@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux'
 
 export default function Maincontent(){
   const dialogue = useSelector((state => state.dialogue.value))
-  const replyIsLoading = useSelector((state => state.replyIsLoading.value))
 
   return (
     <div className='content w-full h-auto flex-1 overflow-y-scroll'>
@@ -15,11 +14,10 @@ export default function Maincontent(){
                 {
                   dialogue?.map((dialog, index) => 
                     dialog?.map((convo) =>
-                      convo.author === 'user'? <Query key={convo.id} id={index} time={convo.time} query={convo.message}/> : <Reply time={convo.time} id={index} reply={convo.message} key={convo.id}/>
+                      convo.author === 'user'? <Query key={convo.id} id={index} time={convo.time} query={convo.message}/> : <Reply id={index} reply={convo.message} key={convo.id}/>
                     )
                   )
                 }
-                {replyIsLoading? <LoadingAnimation/>:<></>}
             </div>
         </Container>
     </div>

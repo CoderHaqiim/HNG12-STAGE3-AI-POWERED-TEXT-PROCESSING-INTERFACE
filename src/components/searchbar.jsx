@@ -23,20 +23,23 @@ export default function Searchbar() {
 
     const error = useSelector(state => state.error.value)
     const dialogue = useSelector((state => state.dialogue.value))
-    const replyIsLoading = useSelector((state => state.replyIsLoading.value))
 
     const sendQuery =(e) =>{
         e.preventDefault()
-        console.log(typeof(query))
+        e.stopPropagation()
+      
         if(!query){
             dispatch(setError([...error, { id:error.length, message: "Please enter a valid text" }]));
             return
         }
+
         dispatch(addDialogue([...dialogue, [{id:dialogue.length + 'user', author:'user', message:query, time:currentTime}]]))
         setQuery('')
         inputRef.current.value = ""
+        deactivateInput()
 
     }
+
 
     const sendWithEnter = (e) => {
            if (e.key === 'Enter' && e.code === 'Enter'){
@@ -51,6 +54,7 @@ export default function Searchbar() {
 
     const activateInput =()=>{
         setActive(true)
+        dispatch(setError([]), 3000)
     }
 
     const setValueToQuery = () =>{
@@ -66,10 +70,8 @@ export default function Searchbar() {
                         <textarea onChange={setValueToQuery} ref={inputRef} onFocus={activateInput} onBlur={deactivateInput} onKeyDown={(e)=>{sendWithEnter(e)}} placeholder={placeholder} className={`textarea text-[#191964] resize-no text-[1.1rem] query-paragraph transition-[0.4s] h-full max-h-[150px] relative p-[10px] pl-[20px] mr-[50px] w-full border-0 outline-0 break-word flex items-center font-[400] flex-wrap overflow-y-scroll`}></textarea>
                         <button type="submit" onClick={(e)=>{sendQuery(e)}} className={`w-[42px] h-[42px] flex items-center justify-center absolute rounded-[10px] right-[7px] bottom-[6px] cursor-pointer`}
                         style={{background}}>
-                            <span className={`${replyIsLoading? "hover:rotate-0" : "hover:rotate-[-30deg]" } p-[10px] transition-[0.4s] w-full h-full transform`}>
-                                {
-                                    !replyIsLoading? <img className="w-full h-full" src={sendIcon} alt="sendIcon" /> : <img className='w-full h-full' src={stopIcon} alt="stopIcon"/>
-                                }
+                            <span className={`hover:rotate-[-30deg] p-[10px] transition-[0.4s] w-full h-full transform`}>
+                                <img className="w-full h-full" src={sendIcon} alt="sendIcon" />
                             </span>
                         </button>
                     </div>

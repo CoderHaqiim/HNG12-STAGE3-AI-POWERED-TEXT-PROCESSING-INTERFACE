@@ -2,7 +2,7 @@ import { useState, useEffect, useRef} from "react"
 import usehttpRequests from "./httpRequests"
 import { languages } from "../utils/languages"
 
-export default function Query({query,id, time}) {
+export default function Query({query,id, time, setIsLoading}) {
   const [targetLanguage, setTargetLanguage] = useState(null)
   const {translateLanguage, detectLanguage, summarizeText} = usehttpRequests()
   const [detectedLanguage, setDetectedLanguage] = useState(null)
@@ -21,12 +21,12 @@ export default function Query({query,id, time}) {
   }
 
   const runTranslation = () => {
-    translateLanguage(query, id, translated, setTranslated, targetLanguage, detectedLanguage)
+    translateLanguage(query, id, translated, setTranslated, targetLanguage, detectedLanguage, setIsLoading)
   }
 
   const runSummary = () => {
     setSummarized(true)
-    summarizeText(query,id,summarized)
+    summarizeText(query,id,summarized, setIsLoading)
   }
 
   const getTargetLanguage = () => {
