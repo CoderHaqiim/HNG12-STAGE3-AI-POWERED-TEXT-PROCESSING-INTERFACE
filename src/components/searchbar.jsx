@@ -66,8 +66,8 @@ export default function Searchbar() {
         <Container>
             <div className='w-full flex flex-col justify-center items-center'>
                 <div className='lg:w-[90%] w-full'>
-                    <span className='flex gap-[5px] pl-[10px] text-[#333333] text-[0.7rem]'>
-                        <span className='text-[0.9rem] font-bold text-[red]'>*</span>
+                    <span className='flex gap-[5px] pl-[10px] text-[#333333] text-[0.6rem] lg:text-[0.7rem]'>
+                        <span className='text-[0.9rem] font-bold text-[#e95bf6]'>*</span>
                         <p>Only English texts with 150 characters and above can be summarized.</p>
                     </span>
                 </div>
