@@ -164,6 +164,7 @@ export default function usehttpRequests(){
           }
         } else {
           dispatch(setError([...error, { id:error.length, message: "The Translator API is not supported on your device" }]));
+          dispatch(setReplyIsLoading(false))
         }
       }
       catch(error){
@@ -173,6 +174,7 @@ export default function usehttpRequests(){
         setTimeout(()=>{
           dispatch(setError([]))
         },3000)
+
         dispatch(setReplyIsLoading(false))
       }
     };
