@@ -172,6 +172,7 @@ export default function usehttpRequests(){
         dispatch(setError([...error,{id:error.length, message: error.message}]))
       }
       finally{
+        dispatch(setReplyIsLoading(false))
         setTimeout(()=>{
           dispatch(setError([]))
         },3000)
