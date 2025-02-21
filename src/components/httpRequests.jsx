@@ -172,9 +172,8 @@ export default function usehttpRequests(){
       finally{
         setTimeout(()=>{
           dispatch(setError([]))
+          dispatch(setReplyIsLoading(false))
         },3000)
-
-        dispatch(setReplyIsLoading(false))
       }
     };
     
