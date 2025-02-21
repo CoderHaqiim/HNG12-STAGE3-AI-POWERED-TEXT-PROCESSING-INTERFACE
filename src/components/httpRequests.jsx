@@ -4,6 +4,7 @@ import { addMessageToDialogue } from "../redux/states/dialogue"
 import { changeTranslation } from "../redux/states/dialogue"
 import { setError } from "../redux/states/error"
 import { setReplyIsLoading } from "../redux/states/replyIsLoading"
+import { setPair } from "../redux/states/translatePair"
 
 export default function usehttpRequests(){
     const dialogue = useSelector((state => state.dialogue.value))
@@ -131,9 +132,26 @@ export default function usehttpRequests(){
           const canTranslate = await translatorCapabilities.languagePairAvailable(detectedLanguage, targetLanguage);
   
           if (canTranslate === "no") {
-            if(detectedLanguage == targetLanguage){
-              dispatch(setError([...error, { id:error.length, message: `Text is already ${detectedLanguage}` }]));
+
+            if(!targetLanguage){
+              dispatch(setError([...error, { id:error.length, message: `Choose a valid language` }]));
+              return
             }
+
+            if(targetLanguage == 'null'){
+              dispatch(setError([...error, { id:error.length, message: `Choose a valid language` }]));
+              return
+            }
+
+
+
+            if(detectedLanguage == targetLanguage){
+              console.log(detectedLanguage, targetLanguage)
+              dispatch(setReplyIsLoading(false))
+              dispatch(setError([...error, { id:error.length, message: `Text is already ${detectedLanguage}` }]));
+              return
+            }
+
             dispatch(setError([...error, { id:error.length, message: "The language pair is not yet supported" }]));
           } else if (canTranslate === "after-download") {
             dispatch(setError([...error, { id:error.length, message: "The language pair needs to be downloaded" }]));
@@ -150,20 +168,24 @@ export default function usehttpRequests(){
               // }
   
             });
+
+            dispatch(setPair(`${detectedLanguage} - ${targetLanguage}`))
   
             const translatedText = await translator.translate(query);
             if(!translated){
+              dispatch(setReplyIsLoading(false))
               dispatch(addMessageToDialogue({index:id, payload:{id:`${id}b`, author:'ai', message: translatedText}}))
               console.log(dialogue)
             }else{
+              dispatch(setReplyIsLoading(false))
               dispatch(changeTranslation({index:id, payload:{id:`${id}b`, author:'ai', message:translatedText}}))
               console.log(dialogue)
             }
   
           }
         } else {
-          dispatch(setError([...error, { id:error.length, message: "The Translator API is not supported on your device" }]));
           dispatch(setReplyIsLoading(false))
+          dispatch(setError([...error, { id:error.length, message: "The Translator API is not supported on your device" }]));
         }
       }
       catch(error){
@@ -171,8 +193,8 @@ export default function usehttpRequests(){
       }
       finally{
         setTimeout(()=>{
-          dispatch(setError([]))
           dispatch(setReplyIsLoading(false))
+          dispatch(setError([]))
         },3000)
       }
     };
