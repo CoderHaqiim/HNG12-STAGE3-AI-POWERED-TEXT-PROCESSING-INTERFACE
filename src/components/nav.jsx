@@ -20,7 +20,7 @@ export default function Nav() {
         <Container>
             <div className="flex w-full h-full items-center justify-between">              
               <div className="font-[900] w-auto h-full text-[white] flex items-center">Textify</div> 
-              <button className="border-[1px] flex font-bold p-[10px] text-[14px] items-center justify-center text-[#191964] bg-[#f098f8] w-[max-content] h-[40px] rounded-[5px]" onClick={clickAction}>Clear chat</button>
+              <button aria-label="clear chat" className="border-[1px] flex font-bold p-[10px] text-[14px] items-center justify-center text-[#191964] hover:bg-[#d38dda] bg-[#f098f8] w-[max-content] h-[40px] rounded-[5px]" onClick={clickAction}>Clear chat</button>
             </div>
         </Container>
     </div>

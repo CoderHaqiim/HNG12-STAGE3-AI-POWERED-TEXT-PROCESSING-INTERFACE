@@ -24,7 +24,7 @@ export default function Reply({reply, type, id}) {
               }
             </div>
             <p>{reply}</p>
-            <div className={`mt-[10px] text-[0.5rem] flex items-end justify-end text-[#777777] font-[700]`}>{time}</div>
+            <div className={`mt-[10px] text-[0.6rem] flex items-end justify-end text-[#777777] font-[700]`}>{time}</div>
           </div>
       }
     </div>

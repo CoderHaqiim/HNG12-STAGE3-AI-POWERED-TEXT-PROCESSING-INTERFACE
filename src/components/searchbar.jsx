@@ -64,13 +64,19 @@ export default function Searchbar() {
   return (
     <div className='w-full min-h-[80px] h-[auto] z-20 '>
         <Container>
-            <div className='w-full flex justify-center items-center'>
+            <div className='w-full flex flex-col justify-center items-center'>
+                <div className='lg:w-[90%] w-full'>
+                    <span className='flex gap-[5px] pl-[10px] text-[#333333] text-[0.7rem]'>
+                        <span className='text-[0.9rem] font-bold text-[red]'>*</span>
+                        <p>Only English texts with 150 characters and above can be summarized.</p>
+                    </span>
+                </div>
                 <div className={`lg:w-[90%] w-full h-auto flex items-center justify-center`}>
                     <div onClick={activateInput} className={`${active? "border-[2px] border-[#0a338d]":'border-[1px] border-[#949393]'} w-full caret-[#0a338d] transition-[0.3s] h-[80px] min-h-[80px] bg-bluelight rounded-[15px] border-[solid] items-center flex-wrap justify-center relative flex`}>
-                        <textarea onChange={setValueToQuery} ref={inputRef} onFocus={activateInput} onBlur={deactivateInput} onKeyDown={(e)=>{sendWithEnter(e)}} placeholder={placeholder} className={`textarea text-[#191964] resize-no text-[1.1rem] query-paragraph transition-[0.4s] h-full max-h-[150px] relative p-[10px] pl-[20px] mr-[50px] w-full border-0 outline-0 break-word flex items-center font-[400] flex-wrap overflow-y-scroll`}></textarea>
-                        <button type="submit" onClick={(e)=>{sendQuery(e)}} className={`w-[42px] h-[42px] flex items-center justify-center absolute rounded-[10px] right-[7px] bottom-[6px] cursor-pointer`}
+                        <textarea aria-label="Enter Your Text" onChange={setValueToQuery} ref={inputRef} onFocus={activateInput} onBlur={deactivateInput} onKeyDown={(e)=>{sendWithEnter(e)}} placeholder={placeholder} className={`textarea text-[#191964] resize-no text-[1.1rem] query-paragraph transition-[0.4s] h-full max-h-[150px] relative p-[10px] pl-[20px] mr-[50px] w-full border-0 outline-0 break-word flex items-center font-[400] flex-wrap overflow-y-scroll`}></textarea>
+                        <button aria-label="Send Text" type="submit" onClick={(e)=>{sendQuery(e)}} className={`w-[42px] h-[42px] flex items-center justify-center absolute rounded-[10px] right-[7px] bottom-[6px] cursor-pointer`}
                         style={{background}}>
-                            <span className={`hover:rotate-[-30deg]" } p-[10px] transition-[0.4s] w-full h-full transform`}>
+                            <span className={`hover:rotate-[-30deg] p-[10px] transition-[0.4s] w-full h-full transform`}>
                                 <img className="w-full h-full" src={sendIcon} alt="sendIcon" />
                             </span>
                         </button>

@@ -1,10 +1,10 @@
-// import { setReplyIsLoading } from "../redux/states/replyIsLoading"
 import { useSelector, useDispatch } from "react-redux"
 import { addMessageToDialogue } from "../redux/states/dialogue"
 import { changeTranslation } from "../redux/states/dialogue"
 import { setError } from "../redux/states/error"
 import { setReplyIsLoading } from "../redux/states/replyIsLoading"
 import { setPair } from "../redux/states/translatePair"
+import { languages } from "../utils/languages"
 
 export default function usehttpRequests(){
     const dialogue = useSelector((state => state.dialogue.value))
@@ -44,11 +44,6 @@ export default function usehttpRequests(){
           } else {
             dispatch(setError([...error, {id: error.length, message: "The summarizer API needs to be downloaded on your device"}]))
             return
-            // summarizer = await self.ai.summarizer.create(options);
-            // summarizer.addEventListener('downloadprogress', (e) => {
-            //   console.log(e.loaded, e.total);
-            // });
-            // await summarizer.ready;
           }
         }else{
           dispatch(setError([...error, {id: error.length, message:"The summarizer API is not supported on your device"}]))
@@ -84,14 +79,6 @@ export default function usehttpRequests(){
               setDetectedLanguage(langCode)
             }
           }else if(canDetect === 'after-download'){
-            // detector = await self.ai.languageDetector.create({
-            //   monitor(m) {
-            //     m.addEventListener('downloadprogress', (e) => {
-            //       console.log(`Downloaded ${e.loaded} of ${e.total} bytes.`);
-            //     });
-            //   },
-            // });
-            // await detector.ready;
             dispatch(setError([...error, {id:error.length, message: "Language detector model needs to be downloaded"}]))
             return
           }else{
@@ -118,7 +105,7 @@ export default function usehttpRequests(){
       try{
         if ('ai' in self && 'translator' in self.ai) {
 
-          if(!detectLanguage){
+          if(!detectedLanguage){
             dispatch(setError([...error, { id:error.length, message: "Language detector must be available for translator to function" }]));
             return
           }
@@ -148,7 +135,7 @@ export default function usehttpRequests(){
             if(detectedLanguage == targetLanguage){
               console.log(detectedLanguage, targetLanguage)
               dispatch(setReplyIsLoading(false))
-              dispatch(setError([...error, { id:error.length, message: `Text is already ${detectedLanguage}` }]));
+              dispatch(setError([...error, { id:error.length, message: `Text is already ${languages[detectedLanguage] ?? detectedLanguage}` }]));
               return
             }
 
@@ -160,13 +147,6 @@ export default function usehttpRequests(){
             const translator = await self.ai.translator.create({ 
               sourceLanguage: detectedLanguage,
               targetLanguage: targetLanguage,
-  
-              // monitor(m){
-              //   m.addEventListener('downloadprogress', (e)=>{
-              //     console.log(`Downloaded ${e.loaded} of ${e.total} bytes`)
-              //   })
-              // }
-  
             });
 
             dispatch(setPair(`${detectedLanguage} - ${targetLanguage}`))
@@ -193,7 +173,6 @@ export default function usehttpRequests(){
       }
       finally{
         setTimeout(()=>{
-          dispatch(setReplyIsLoading(false))
           dispatch(setError([]))
         },3000)
       }
