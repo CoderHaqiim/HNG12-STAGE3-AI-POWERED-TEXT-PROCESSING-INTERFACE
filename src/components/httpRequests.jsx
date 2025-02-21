@@ -92,6 +92,7 @@ export default function usehttpRequests(){
             // });
             // await detector.ready;
             dispatch(setError([...error, {id:error.length, message: "Language detector model needs to be downloaded"}]))
+            return
           }else{
             dispatch(setError([...error, {id:error.length, message: "Language detector not found"}]))
           }
@@ -105,6 +106,7 @@ export default function usehttpRequests(){
       }
       finally{
         setTimeout(()=>{dispatch(setError([]))},3000)
+        dispatch(setReplyIsLoading(false))
       }
     }
 
@@ -131,13 +133,10 @@ export default function usehttpRequests(){
           if (canTranslate === "no") {
             if(detectedLanguage == targetLanguage){
               dispatch(setError([...error, { id:error.length, message: `Text is already ${detectedLanguage}` }]));
-              return
             }
             dispatch(setError([...error, { id:error.length, message: "The language pair is not yet supported" }]));
-            return {};
           } else if (canTranslate === "after-download") {
             dispatch(setError([...error, { id:error.length, message: "The language pair needs to be downloaded" }]));
-            return;
           } else if (canTranslate == "readily") {
             setTranslated(true)
             const translator = await self.ai.translator.create({ 
