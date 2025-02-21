@@ -10,11 +10,11 @@ export default function Maincontent(){
   return (
     <div className='content w-full h-auto flex-1 overflow-y-scroll'>
         <Container>
-            <div className='w-full h-auto flex gap-[30px] lg:gap-[50px] flex-col py-[20px]'>
+            <div className='w-full h-auto flex gap-[70px] lg:gap-[50px] flex-col py-[20px]'>
                 {
                   dialogue?.map((dialog, index) => 
                     dialog?.map((convo) =>
-                      convo.author === 'user'? <Query key={convo.id} id={index} time={convo.time} query={convo.message}/> : <Reply id={index} reply={convo.message} key={convo.id}/>
+                      convo.author === 'user'? <Query key={convo.id} id={index} time={convo.time} query={convo.message}/> : <Reply id={index} type={convo.type} reply={convo.message} key={convo.id}/>
                     )
                   )
                 }

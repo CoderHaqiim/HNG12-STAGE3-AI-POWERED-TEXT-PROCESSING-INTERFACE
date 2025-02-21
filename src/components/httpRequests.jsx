@@ -39,7 +39,7 @@ export default function usehttpRequests(){
                 context: 'This article is intended for a tech-savvy audience.',
               });
 
-              dispatch(addMessageToDialogue({index:id, payload:{id:`${id}c`, author:'ai', message:summary}}))
+              dispatch(addMessageToDialogue({index:id, payload:{id:`${id}c`, author:'ai', message:summary, type:"summary"}}))
             }
           } else {
             dispatch(setError([...error, {id: error.length, message: "The summarizer API needs to be downloaded on your device"}]))
@@ -174,11 +174,11 @@ export default function usehttpRequests(){
             const translatedText = await translator.translate(query);
             if(!translated){
               dispatch(setReplyIsLoading(false))
-              dispatch(addMessageToDialogue({index:id, payload:{id:`${id}b`, author:'ai', message: translatedText}}))
+              dispatch(addMessageToDialogue({index:id, payload:{id:`${id}b`, author:'ai', message: translatedText, type:"translation"}}))
               console.log(dialogue)
             }else{
               dispatch(setReplyIsLoading(false))
-              dispatch(changeTranslation({index:id, payload:{id:`${id}b`, author:'ai', message:translatedText}}))
+              dispatch(changeTranslation({index:id, payload:{id:`${id}b`, author:'ai', message:translatedText, type:"translation"}}))
               console.log(dialogue)
             }
   
