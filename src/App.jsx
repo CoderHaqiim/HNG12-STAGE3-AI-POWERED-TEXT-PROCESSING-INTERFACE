@@ -5,9 +5,10 @@ import ErrorDisplay from './components/errorDisplay'
 import { background,backgroundContext } from './redux/states/background'
 
 function App() {
+
   return (
     <backgroundContext.Provider value = {background}> 
-       <div className='w-full relative h-[100dvh] bg-bg1 bg-[white] flex flex-col justify-between max-w-[1600px]'>
+       <div className='w-full relative h-[100dvh] bg-[white] flex flex-col justify-between max-w-[1600px]'>
         <ErrorDisplay/>
         <Nav/>
         <Maincontent/>

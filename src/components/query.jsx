@@ -12,6 +12,7 @@ export default function Query({query,id, time}) {
   const [showSummaryBtn, setShowSummaryBtn] = useState(false)
   const [translated, setTranslated] = useState(false)
   const [summarized, setSummarized] = useState(false)
+  const [boxHeight, setBoxHeight] = useState(null)
   const languageSelectorRef = useRef(null)
   const dispatch = useDispatch()
 
