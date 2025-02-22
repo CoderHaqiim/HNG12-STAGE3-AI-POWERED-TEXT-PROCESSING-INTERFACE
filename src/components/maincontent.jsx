@@ -8,17 +8,21 @@ export default function Maincontent(){
   const dialogue = useSelector((state => state.dialogue.value))
   const contentRef = useRef(null)
 
-  const selfScroll = () => {
-    if(contentRef.current){
-      contentRef.current.scrollBy({top: contentRef.current.scrollHeight, left:0, behavior:'smooth'})
-    }else{
-      return
-    }
-  }
+  // const selfScroll = () => {
+  //   if(contentRef.current){
+  //     if(contentRef.current.scrollTop === contentRef.current.scrollTop){
+  //       contentRef.current.scrollBy({top: contentRef.current.scrollHeight, left:0, behavior:'smooth'})
+  //     }else{
+  //       return
+  //     }
+  //   }else{
+  //     return
+  //   }
+  // }
 
-  useEffect(()=>{
-    selfScroll()
-  },[dialogue])
+  // useEffect(()=>{
+  //   selfScroll()
+  // },[dialogue])
 
   return (
     <div ref={contentRef} className='content relative w-full h-auto tranform translate-[.5s] flex-1 overflow-y-scroll'>
