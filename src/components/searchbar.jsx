@@ -68,7 +68,7 @@ export default function Searchbar() {
                 <div className='lg:w-[90%] w-full'>
                     <span className='flex gap-[5px] pl-[10px] text-[#333333] text-[0.6rem] lg:text-[0.7rem]'>
                         <span className='text-[0.9rem] font-bold text-[#e95bf6]'>*</span>
-                        <p>Only English texts with 150 characters and above can be summarized.</p>
+                        <p>Only <strong>English</strong> texts with <strong>150 characters</strong> and above can be summarized.</p>
                     </span>
                 </div>
                 <div className={`lg:w-[90%] w-full h-auto flex items-center justify-center`}>
